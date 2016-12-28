@@ -103,7 +103,7 @@ Prints the sizes of all directories in a hierarchy.
             dirs.Sort((a, b) => -String.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
             foreach(var diSub in dirs)
             {
-                DirSize(diSub, level + 1, showLevels, output);
+                fullSize += DirSize(diSub, level + 1, showLevels, output);
             }
 
             if (level <= showLevels)
