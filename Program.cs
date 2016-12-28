@@ -92,19 +92,18 @@ Prints the sizes of all directories in a hierarchy.
         static long DirSize(DirectoryInfo di, int level, int showLevels, List<string> output)
         {
             long fullSize = 0;
-            foreach(var fsi in di.EnumerateFileSystemInfos())
+            foreach (var fi in di.EnumerateFiles())
             {
-                DirectoryInfo di2 = fsi as DirectoryInfo;
-                if (di2 != null)
-                {
-                    fullSize += DirSize(di2, level + 1, showLevels, output);
-                }
+                fullSize += fi.Length;
+            }
 
-                FileInfo fi = fsi as FileInfo;
-                if (fi != null)
-                {
-                    fullSize += fi.Length;
-                }
+            // We process the directories in reverse alphabetical order because the final list will
+            // be reversed again in order to show the parent directory before its children.
+            List<DirectoryInfo> dirs = new List<DirectoryInfo>(di.EnumerateDirectories());
+            dirs.Sort((a, b) => -String.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+            foreach(var diSub in dirs)
+            {
+                DirSize(diSub, level + 1, showLevels, output);
             }
 
             if (level <= showLevels)
